@@ -1,5 +1,5 @@
 {
-  "name": "congressdesign-02",
+  "name": "congress-medical",
   "private": true,
   "scripts": {
     "start": "serve . -p 3000",

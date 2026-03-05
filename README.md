@@ -16,7 +16,7 @@ Open [http://localhost:3000](http://localhost:3000).
 ### 1. Create the GitHub repository
 
 - Go to [github.com/new](https://github.com/new).
-- **Repository name:** `congress-design`
+- **Repository name:** `congress-medical`
 - Do **not** add a README, .gitignore, or license (this repo already has them).
 - Create the repository.
 
@@ -25,7 +25,7 @@ Open [http://localhost:3000](http://localhost:3000).
 From the project root, run (replace `YOUR_USERNAME` with your GitHub username):
 
 ```bash
-git remote add origin https://github.com/YOUR_USERNAME/congress-design.git
+git remote add origin https://github.com/YOUR_USERNAME/congress-medical.git
 git push -u origin main
 ```
 
@@ -41,6 +41,6 @@ If prompted for credentials, use a [Personal Access Token](https://github.com/se
 
 The site will be available at:
 
-**https://YOUR_USERNAME.github.io/congress-design/**
+**https://YOUR_USERNAME.github.io/congress-medical/**
 
 Future pushes to `main` will trigger a new deployment automatically.
