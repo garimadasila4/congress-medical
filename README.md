@@ -13,19 +13,24 @@ Open [http://localhost:3000](http://localhost:3000).
 
 ## Deploy to GitHub and GitHub Pages
 
+The project is already set up to push to **congress-medical**. If your GitHub username is not `garimadasila`, run:
+
+```bash
+git remote set-url origin https://github.com/YOUR_USERNAME/congress-medical.git
+```
+
 ### 1. Create the GitHub repository
 
 - Go to [github.com/new](https://github.com/new).
 - **Repository name:** `congress-medical`
 - Do **not** add a README, .gitignore, or license (this repo already has them).
-- Create the repository.
+- Click **Create repository**.
 
 ### 2. Push this project to GitHub
 
-From the project root, run (replace `YOUR_USERNAME` with your GitHub username):
+From the project root:
 
 ```bash
-git remote add origin https://github.com/YOUR_USERNAME/congress-medical.git
 git push -u origin main
 ```
 
