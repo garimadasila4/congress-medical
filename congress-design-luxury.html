@@ -668,11 +668,11 @@ input:focus,select:focus,button:focus{outline:none}
           <div class="gold-rule"></div>
           <div class="page-subtitle" style="margin-top:10px">7 active sources</div>
         </div>
-        <button class="btn-gold">+ Add Source</button>
+        <button class="btn-gold" id="addSourceBtn">+ Add Source</button>
       </div>
       <table class="sources-table">
         <thead><tr><th>Source Name</th><th>Meeting Name</th><th></th></tr></thead>
-        <tbody>
+        <tbody id="sourcesTableBody">
           <tr><td><span class="source-badge">AAP</span></td><td>American Academy of Pediatrics</td><td style="text-align:right;color:var(--gold)">→</td></tr>
           <tr><td><span class="source-badge">ASCO</span></td><td>American Society of Clinical Oncology</td><td style="text-align:right;color:var(--gold)">→</td></tr>
           <tr><td><span class="source-badge">EHA</span></td><td>European Hematology Association</td><td style="text-align:right;color:var(--gold)">→</td></tr>
@@ -807,6 +807,18 @@ input:focus,select:focus,button:focus{outline:none}
   </div>
 </div>
 
+<!-- ADD SOURCE MODAL -->
+<div class="modal-overlay" id="addSourceModal">
+  <div class="modal">
+    <button class="modal-close" id="addSourceModalClose">✕</button>
+    <div class="modal-title" style="margin-bottom:8px">Add source</div>
+    <div class="modal-subtitle" style="margin-bottom:22px">Add a new congress source to your list.</div>
+    <div class="modal-field"><label>Source name</label><input class="modal-input" id="addSourceName" type="text" placeholder="e.g. AAP, ASCO, EHA" maxlength="20"/></div>
+    <div class="modal-field"><label>Meeting name</label><input class="modal-input" id="addMeetingName" type="text" placeholder="e.g. American Academy of Pediatrics 2024"/></div>
+    <button class="modal-submit" id="addSourceSubmit">Add source</button>
+  </div>
+</div>
+
 <script>
   // ── Theme ──
   const html = document.documentElement;
@@ -886,6 +898,41 @@ input:focus,select:focus,button:focus{outline:none}
   document.getElementById('modalClose').addEventListener('click',()=>signInModal.classList.remove('open'));
   signInModal.addEventListener('click',e=>{ if(e.target===signInModal) signInModal.classList.remove('open') });
   document.addEventListener('keydown',e=>{ if(e.key==='Escape') signInModal.classList.remove('open') });
+
+  // ── Add source modal ──
+  const addSourceModal = document.getElementById('addSourceModal');
+  const addSourceBtn = document.getElementById('addSourceBtn');
+  const addSourceModalClose = document.getElementById('addSourceModalClose');
+  const addSourceName = document.getElementById('addSourceName');
+  const addMeetingName = document.getElementById('addMeetingName');
+  const addSourceSubmit = document.getElementById('addSourceSubmit');
+  const sourcesTableBody = document.getElementById('sourcesTableBody');
+  addSourceBtn.addEventListener('click',()=>{ addSourceName.value=''; addMeetingName.value=''; addSourceModal.classList.add('open'); addSourceName.focus(); });
+  addSourceModalClose.addEventListener('click',()=>addSourceModal.classList.remove('open'));
+  addSourceModal.addEventListener('click',e=>{ if(e.target===addSourceModal) addSourceModal.classList.remove('open') });
+  document.addEventListener('keydown',e=>{ if(e.key==='Escape') addSourceModal.classList.remove('open') });
+  addSourceSubmit.addEventListener('click',()=>{
+    const name = (addSourceName.value || '').trim().toUpperCase();
+    const meeting = (addMeetingName.value || '').trim();
+    if(!name || !meeting){ addSourceName.focus(); return; }
+    const tr = document.createElement('tr');
+    const badge = document.createElement('span');
+    badge.className = 'source-badge';
+    badge.textContent = name;
+    const td1 = document.createElement('td');
+    td1.appendChild(badge);
+    const td2 = document.createElement('td');
+    td2.textContent = meeting;
+    const td3 = document.createElement('td');
+    td3.style.textAlign = 'right';
+    td3.style.color = 'var(--gold)';
+    td3.textContent = '→';
+    tr.appendChild(td1);
+    tr.appendChild(td2);
+    tr.appendChild(td3);
+    sourcesTableBody.appendChild(tr);
+    addSourceModal.classList.remove('open');
+  });
 
   // ── Mobile sidebar ──
   const sidebar = document.getElementById('sidebar');
