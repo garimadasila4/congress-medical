@@ -281,12 +281,15 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
   background-repeat:no-repeat;background-position:right 12px center}
 .search-select:focus{border-color:rgba(201,168,76,.45)}
 
-.search-results-table{width:100%;border-collapse:collapse;border:1px solid var(--border);
-  border-radius:12px;overflow:hidden;transition:var(--T)}
+.search-results-table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;
+  max-width:100%;border:1px solid var(--border);border-radius:12px;overflow-y:visible}
+.search-results-table{width:100%;min-width:640px;border-collapse:collapse;transition:var(--T)}
 .search-results-table thead{background:var(--surface2)}
-.search-results-table thead th{padding:12px 18px;text-align:left;font-size:.58rem;
+.search-results-table thead th{position:sticky;top:0;z-index:2;background:var(--surface2);
+  padding:12px 18px;text-align:left;font-size:.58rem;
   letter-spacing:.2em;text-transform:uppercase;color:var(--text-muted);font-weight:400;
-  border-bottom:1px solid var(--border);white-space:nowrap;transition:color .35s,border-color .35s}
+  border-bottom:1px solid var(--border);white-space:nowrap;transition:color .35s,border-color .35s;
+  box-shadow:0 1px 0 var(--border)}
 .search-results-table tbody tr{background:var(--surface);border-bottom:1px solid var(--border);
   transition:background .2s,var(--T);cursor:pointer}
 .search-results-table tbody tr:last-child{border-bottom:none}
@@ -453,7 +456,7 @@ input:focus,select:focus,button:focus{outline:none}
   .header-date{text-align:left}
   .search-controls{flex-direction:column;align-items:stretch}
   .search-input-wrap{width:100%;max-width:100%}
-  .search-results-table{display:block;overflow-x:auto;-webkit-overflow-scrolling:touch;max-width:100%}
+  .search-results-table-wrap{max-width:100%}
   .stat-value{font-size:2.5rem}
   .content{min-width:0;padding:24px 16px;padding-left:max(16px,env(safe-area-inset-left));padding-right:max(16px,env(safe-area-inset-right))}
   .topbar{padding:0 12px;padding-left:max(12px,env(safe-area-inset-left));padding-right:max(12px,env(safe-area-inset-right))}
@@ -705,9 +708,10 @@ input:focus,select:focus,button:focus{outline:none}
           <select id="searchSrcSelect" class="search-select"><option value="">All sources</option><option value="AAP">AAP</option><option value="ASCO">ASCO</option><option value="EHA">EHA</option><option value="ESMO">ESMO</option><option value="ACC">ACC</option><option value="AHA">AHA</option></select>
         </div>
       </div>
-      <table class="search-results-table">
-        <thead><tr><th>Creation Date</th><th>Source</th><th>Medicine</th><th>Meeting</th><th>Meeting Date</th><th>Keywords</th><th>View Details</th></tr></thead>
-        <tbody id="searchResultsBody">
+      <div class="search-results-table-wrap">
+        <table class="search-results-table">
+          <thead><tr><th>Creation Date</th><th>Source</th><th>Medicine</th><th>Meeting</th><th>Meeting Date</th><th>Keywords</th><th>View Details</th></tr></thead>
+          <tbody id="searchResultsBody">
           <tr data-source="AAP" data-year="2024"><td>Feb 16, 2026</td><td><span class="source-badge">AAP</span></td><td class="dash">—</td><td class="meeting-cell">American Academy of Pediatric (AAP) 2024</td><td>2024-09-27 – 2024-10-01</td><td class="dash">—</td><td><button class="view-details-btn">View details →</button></td></tr>
           <tr data-source="AAP" data-year="2024"><td>Feb 16, 2026</td><td><span class="source-badge">AAP</span></td><td class="dash">—</td><td class="meeting-cell">American Academy of Pediatric (AAP) 2024</td><td>2024-09-27 – 2024-10-01</td><td class="dash">—</td><td><button class="view-details-btn">View details →</button></td></tr>
           <tr data-source="AAP" data-year="2024"><td>Feb 16, 2026</td><td><span class="source-badge">AAP</span></td><td class="dash">—</td><td class="meeting-cell">American Academy of Pediatric (AAP) 2024</td><td>2024-09-27 – 2024-10-01</td><td class="dash">—</td><td><button class="view-details-btn">View details →</button></td></tr>
@@ -717,8 +721,9 @@ input:focus,select:focus,button:focus{outline:none}
           <tr data-source="EHA" data-year="2024"><td>Jan 22, 2026</td><td><span class="source-badge">EHA</span></td><td class="dash">—</td><td class="meeting-cell">EHA Congress 2024</td><td>2024-06-13 – 2024-06-16</td><td class="dash">—</td><td><button class="view-details-btn">View details →</button></td></tr>
           <tr data-source="AAP" data-year="2024"><td>Feb 16, 2026</td><td><span class="source-badge">AAP</span></td><td class="dash">—</td><td class="meeting-cell">American Academy of Pediatric (AAP) 2024</td><td>2024-09-27 – 2024-10-01</td><td class="dash">—</td><td><button class="view-details-btn">View details →</button></td></tr>
           <tr data-source="AAP" data-year="2024"><td>Feb 16, 2026</td><td><span class="source-badge">AAP</span></td><td class="dash">—</td><td class="meeting-cell">American Academy of Pediatric (AAP) 2024</td><td>2024-09-27 – 2024-10-01</td><td class="dash">—</td><td><button class="view-details-btn">View details →</button></td></tr>
-        </tbody>
-      </table>
+          </tbody>
+        </table>
+      </div>
     </div>
 
     <!-- ── ABSTRACT DETAIL ── -->
