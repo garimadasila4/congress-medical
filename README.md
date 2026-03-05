@@ -13,7 +13,7 @@ Open [http://localhost:3000](http://localhost:3000).
 
 ## Deploy to GitHub and GitHub Pages
 
-The project is already set up to push to **congress-medical**. If your GitHub username is not `garimadasila`, run:
+The project is already set up to push to **garimadasila4/congress-medical**. If your GitHub username is not `garimadasila4`, run:
 
 ```bash
 git remote set-url origin https://github.com/YOUR_USERNAME/congress-medical.git
@@ -46,6 +46,6 @@ If prompted for credentials, use a [Personal Access Token](https://github.com/se
 
 The site will be available at:
 
-**https://YOUR_USERNAME.github.io/congress-medical/**
+**https://garimadasila4.github.io/congress-medical/**
 
 Future pushes to `main` will trigger a new deployment automatically.
