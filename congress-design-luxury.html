@@ -243,6 +243,7 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
 
 /* ── SOURCES TABLE ── */
 .sources-section{display:none}
+#page-sources[data-visible="true"],#page-search[data-visible="true"],#page-abstract-detail[data-visible="true"],#page-settings[data-visible="true"]{display:block !important}
 #page-sources.page-visible,#page-search.page-visible,#page-abstract-detail.page-visible,#page-settings.page-visible{display:block !important}
 
 .sources-header{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:36px;flex-wrap:wrap;gap:16px}
@@ -832,7 +833,8 @@ input:focus,select:focus,button:focus{outline:none}
   'use strict';
   function ready(fn){ if(document.readyState!=='loading') fn(); else document.addEventListener('DOMContentLoaded',fn); }
   ready(function(){
-  const html = document.documentElement;
+  try {
+  var html = document.documentElement;
   const themeToggle = document.getElementById('themeToggle');
   function applyTheme(t){ html.setAttribute('data-theme',t); localStorage.setItem('cd-theme',t); }
   const saved = localStorage.getItem('cd-theme');
@@ -855,31 +857,40 @@ input:focus,select:focus,button:focus{outline:none}
       if(!el) return;
       el.style.display = k===key ? 'block' : 'none';
       el.classList.toggle('page-visible', k===key);
+      el.setAttribute('data-visible', k===key ? 'true' : 'false');
     });
     window.scrollTo(0,0);
   }
-  document.getElementById('page-overview').classList.add('page-visible');
+  var pageOverview = document.getElementById('page-overview');
+  if(pageOverview){ pageOverview.classList.add('page-visible'); pageOverview.setAttribute('data-visible','true'); }
 
-  navItems.forEach(item=>item.addEventListener('click',e=>{
-    e.preventDefault();
-    navItems.forEach(n=>n.classList.remove('active'));
-    item.classList.add('active');
-    showPage(item.dataset.page);
-  }));
+  navItems.forEach(function(item){
+    item.addEventListener('click',function(e){
+      e.preventDefault();
+      var pageKey = item.getAttribute('data-page');
+      if(!pageKey) return;
+      navItems.forEach(function(n){ n.classList.remove('active'); });
+      item.classList.add('active');
+      showPage(pageKey);
+    });
+  });
 
   // View details → detail page
-  document.querySelectorAll('.view-details-btn').forEach(btn=>btn.addEventListener('click',e=>{
-    e.stopPropagation(); showPage('abstract-detail');
-  }));
+  document.querySelectorAll('.view-details-btn').forEach(function(btn){
+    btn.addEventListener('click',function(e){ e.stopPropagation(); showPage('abstract-detail'); });
+  });
 
   // Back from detail
-  document.getElementById('detailBackBtn').addEventListener('click',()=>showPage('search'));
+  var detailBackBtn = document.getElementById('detailBackBtn');
+  if(detailBackBtn) detailBackBtn.addEventListener('click',()=>showPage('search'));
 
   // View all → abstracts
-  document.getElementById('viewAllAbstracts').addEventListener('click',e=>{
+  var viewAllAbstracts = document.getElementById('viewAllAbstracts');
+  if(viewAllAbstracts) viewAllAbstracts.addEventListener('click',e=>{
     e.preventDefault();
     navItems.forEach(n=>n.classList.remove('active'));
-    document.querySelector('[data-page="abstracts"]').classList.add('active');
+    var abstractsNav = document.querySelector('[data-page="abstracts"]');
+    if(abstractsNav) abstractsNav.classList.add('active');
     showPage('abstracts');
   });
 
@@ -889,10 +900,11 @@ input:focus,select:focus,button:focus{outline:none}
   const searchSrcSelect = document.getElementById('searchSrcSelect');
   const searchResultsBody = document.getElementById('searchResultsBody');
   function filterSearchTable(){
-    const query = (searchDataInput.value || '').trim().toLowerCase();
-    const year = (searchDateSelect.value || '').trim();
-    const source = (searchSrcSelect.value || '').trim();
-    const rows = searchResultsBody.querySelectorAll('tr');
+    if(!searchResultsBody) return;
+    var query = (searchDataInput && searchDataInput.value ? searchDataInput.value : '').trim().toLowerCase();
+    var year = (searchDateSelect && searchDateSelect.value ? searchDateSelect.value : '').trim();
+    var source = (searchSrcSelect && searchSrcSelect.value ? searchSrcSelect.value : '').trim();
+    var rows = searchResultsBody.querySelectorAll('tr');
     rows.forEach(tr=>{
       const rowSource = (tr.getAttribute('data-source') || '').toLowerCase();
       const rowYear = (tr.getAttribute('data-year') || '');
@@ -903,17 +915,18 @@ input:focus,select:focus,button:focus{outline:none}
       tr.style.display = (matchQuery && matchYear && matchSource) ? '' : 'none';
     });
   }
-  searchDataInput.addEventListener('input',filterSearchTable);
-  searchDataInput.addEventListener('keyup',filterSearchTable);
-  searchDateSelect.addEventListener('change',filterSearchTable);
-  searchSrcSelect.addEventListener('change',filterSearchTable);
+  if(searchDataInput){ searchDataInput.addEventListener('input',filterSearchTable); searchDataInput.addEventListener('keyup',filterSearchTable); }
+  if(searchDateSelect) searchDateSelect.addEventListener('change',filterSearchTable);
+  if(searchSrcSelect) searchSrcSelect.addEventListener('change',filterSearchTable);
 
   // ── Sign in modal ──
   const signInModal = document.getElementById('signInModal');
-  document.getElementById('signInBtn').addEventListener('click',()=>signInModal.classList.add('open'));
-  document.getElementById('modalClose').addEventListener('click',()=>signInModal.classList.remove('open'));
-  signInModal.addEventListener('click',e=>{ if(e.target===signInModal) signInModal.classList.remove('open') });
-  document.addEventListener('keydown',e=>{ if(e.key==='Escape') signInModal.classList.remove('open') });
+  var signInBtn = document.getElementById('signInBtn');
+  var modalClose = document.getElementById('modalClose');
+  if(signInBtn && signInModal) signInBtn.addEventListener('click',()=>signInModal.classList.add('open'));
+  if(modalClose && signInModal) modalClose.addEventListener('click',()=>signInModal.classList.remove('open'));
+  if(signInModal) signInModal.addEventListener('click',e=>{ if(e.target===signInModal) signInModal.classList.remove('open') });
+  document.addEventListener('keydown',e=>{ if(e.key==='Escape' && signInModal) signInModal.classList.remove('open') });
 
   // ── Add source modal ──
   const addSourceModal = document.getElementById('addSourceModal');
@@ -923,8 +936,8 @@ input:focus,select:focus,button:focus{outline:none}
   const addMeetingName = document.getElementById('addMeetingName');
   const addSourceSubmit = document.getElementById('addSourceSubmit');
   const sourcesTableBody = document.getElementById('sourcesTableBody');
-  function openAddSourceModal(){ addSourceName.value=''; addMeetingName.value=''; addSourceModal.classList.add('open'); addSourceName.focus(); }
-  addSourceBtn.addEventListener('click',openAddSourceModal);
+  function openAddSourceModal(){ if(addSourceName) addSourceName.value=''; if(addMeetingName) addMeetingName.value=''; if(addSourceModal){ addSourceModal.classList.add('open'); if(addSourceName) addSourceName.focus(); } }
+  if(addSourceBtn) addSourceBtn.addEventListener('click',openAddSourceModal);
   var topbarAddSourceBtn = document.getElementById('topbarAddSourceBtn');
   if(topbarAddSourceBtn) topbarAddSourceBtn.addEventListener('click',function(){
     navItems.forEach(function(n){ n.classList.remove('active'); });
@@ -934,7 +947,7 @@ input:focus,select:focus,button:focus{outline:none}
     openAddSourceModal();
   });
   var sourcesSearchInput = document.getElementById('sourcesSearchInput');
-  if(sourcesSearchInput) sourcesSearchInput.addEventListener('input',function(){
+  if(sourcesSearchInput && sourcesTableBody) sourcesSearchInput.addEventListener('input',function(){
     var q = (this.value || '').trim().toLowerCase();
     var rows = sourcesTableBody.querySelectorAll('tr');
     rows.forEach(function(tr){
@@ -942,22 +955,22 @@ input:focus,select:focus,button:focus{outline:none}
       tr.style.display = !q || text.indexOf(q) !== -1 ? '' : 'none';
     });
   });
-  addSourceModalClose.addEventListener('click',()=>addSourceModal.classList.remove('open'));
-  addSourceModal.addEventListener('click',e=>{ if(e.target===addSourceModal) addSourceModal.classList.remove('open') });
-  document.addEventListener('keydown',e=>{ if(e.key==='Escape') addSourceModal.classList.remove('open') });
-  addSourceSubmit.addEventListener('click',()=>{
-    const name = (addSourceName.value || '').trim().toUpperCase();
-    const meeting = (addMeetingName.value || '').trim();
+  if(addSourceModalClose && addSourceModal) addSourceModalClose.addEventListener('click',()=>addSourceModal.classList.remove('open'));
+  if(addSourceModal) addSourceModal.addEventListener('click',e=>{ if(e.target===addSourceModal) addSourceModal.classList.remove('open') });
+  document.addEventListener('keydown',e=>{ if(e.key==='Escape' && addSourceModal) addSourceModal.classList.remove('open') });
+  if(addSourceSubmit && addSourceName && addMeetingName && sourcesTableBody && addSourceModal) addSourceSubmit.addEventListener('click',function(){
+    var name = (addSourceName.value || '').trim().toUpperCase();
+    var meeting = (addMeetingName.value || '').trim();
     if(!name || !meeting){ addSourceName.focus(); return; }
-    const tr = document.createElement('tr');
-    const badge = document.createElement('span');
+    var tr = document.createElement('tr');
+    var badge = document.createElement('span');
     badge.className = 'source-badge';
     badge.textContent = name;
-    const td1 = document.createElement('td');
+    var td1 = document.createElement('td');
     td1.appendChild(badge);
-    const td2 = document.createElement('td');
+    var td2 = document.createElement('td');
     td2.textContent = meeting;
-    const td3 = document.createElement('td');
+    var td3 = document.createElement('td');
     td3.style.textAlign = 'right';
     td3.style.color = 'var(--gold)';
     td3.textContent = '→';
@@ -969,16 +982,18 @@ input:focus,select:focus,button:focus{outline:none}
   });
 
   // ── Mobile sidebar ──
-  const sidebar = document.getElementById('sidebar');
-  const sidebarOverlay = document.getElementById('sidebarOverlay');
-  const menuToggle = document.getElementById('menuToggle');
-  function closeSidebar(){ sidebar.classList.remove('open'); sidebarOverlay.classList.remove('open'); sidebarOverlay.setAttribute('aria-hidden','true'); }
-  function openSidebar(){ sidebar.classList.add('open'); sidebarOverlay.classList.add('open'); sidebarOverlay.setAttribute('aria-hidden','false'); }
-  menuToggle.addEventListener('click',()=> sidebar.classList.contains('open') ? closeSidebar() : openSidebar());
-  sidebarOverlay.addEventListener('click',closeSidebar);
-  document.getElementById('sidebarClose').addEventListener('click',closeSidebar);
-  navItems.forEach(item=> item.addEventListener('click',closeSidebar));
-  document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeSidebar(); });
+  var sidebar = document.getElementById('sidebar');
+  var sidebarOverlay = document.getElementById('sidebarOverlay');
+  var menuToggle = document.getElementById('menuToggle');
+  var sidebarCloseBtn = document.getElementById('sidebarClose');
+  function closeSidebar(){ if(sidebar){ sidebar.classList.remove('open'); } if(sidebarOverlay){ sidebarOverlay.classList.remove('open'); sidebarOverlay.setAttribute('aria-hidden','true'); } }
+  function openSidebar(){ if(sidebar){ sidebar.classList.add('open'); } if(sidebarOverlay){ sidebarOverlay.classList.add('open'); sidebarOverlay.setAttribute('aria-hidden','false'); } }
+  if(menuToggle) menuToggle.addEventListener('click',function(){ if(sidebar && sidebar.classList.contains('open')) closeSidebar(); else openSidebar(); });
+  if(sidebarOverlay) sidebarOverlay.addEventListener('click',closeSidebar);
+  if(sidebarCloseBtn) sidebarCloseBtn.addEventListener('click',closeSidebar);
+  navItems.forEach(function(item){ item.addEventListener('click',closeSidebar); });
+  document.addEventListener('keydown',function(e){ if(e.key==='Escape') closeSidebar(); });
+  } catch(err) { console.error('Congress Design init error:', err); }
   }); // end ready
 })();
 </script>
