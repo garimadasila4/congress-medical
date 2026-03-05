@@ -243,8 +243,10 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
 
 /* ── SOURCES TABLE ── */
 .sources-section{display:none}
+#page-sources.page-visible,#page-search.page-visible,#page-abstract-detail.page-visible,#page-settings.page-visible{display:block !important}
 
-.sources-header{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:36px}
+.sources-header{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:36px;flex-wrap:wrap;gap:16px}
+.sources-header-actions{display:flex;align-items:center;gap:12px;flex-shrink:0}
 
 .sources-table{width:100%;border-collapse:collapse;border:1px solid var(--border);
   border-radius:12px;overflow:hidden;transition:var(--T)}
@@ -589,7 +591,7 @@ input:focus,select:focus,button:focus{outline:none}
         <svg class="btn-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
         <span>Sign in</span>
       </button>
-      <button class="btn-gold">+ Source</button>
+      <button class="btn-gold" id="topbarAddSourceBtn">+ Source</button>
     </div>
   </header>
 
@@ -668,7 +670,13 @@ input:focus,select:focus,button:focus{outline:none}
           <div class="gold-rule"></div>
           <div class="page-subtitle" style="margin-top:10px">7 active sources</div>
         </div>
-        <button class="btn-gold" id="addSourceBtn">+ Add Source</button>
+        <div class="sources-header-actions">
+          <div class="search-input-wrap" style="width:220px">
+            <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="var(--text-muted)" stroke-width="1.5"><circle cx="6.5" cy="6.5" r="4.5"/><path d="M11 11l3 3"/></svg>
+            <input id="sourcesSearchInput" type="text" placeholder="Search…"/>
+          </div>
+          <button class="btn-gold" id="addSourceBtn">+ Add Source</button>
+        </div>
       </div>
       <table class="sources-table">
         <thead><tr><th>Source Name</th><th>Meeting Name</th><th></th></tr></thead>
@@ -843,9 +851,14 @@ input:focus,select:focus,button:focus{outline:none}
   };
 
   function showPage(key){
-    Object.entries(pages).forEach(([k,el])=>{ if(el) el.style.display = k===key?'block':'none' });
+    Object.entries(pages).forEach(([k,el])=>{
+      if(!el) return;
+      el.style.display = k===key ? 'block' : 'none';
+      el.classList.toggle('page-visible', k===key);
+    });
     window.scrollTo(0,0);
   }
+  document.getElementById('page-overview').classList.add('page-visible');
 
   navItems.forEach(item=>item.addEventListener('click',e=>{
     e.preventDefault();
@@ -910,7 +923,25 @@ input:focus,select:focus,button:focus{outline:none}
   const addMeetingName = document.getElementById('addMeetingName');
   const addSourceSubmit = document.getElementById('addSourceSubmit');
   const sourcesTableBody = document.getElementById('sourcesTableBody');
-  addSourceBtn.addEventListener('click',()=>{ addSourceName.value=''; addMeetingName.value=''; addSourceModal.classList.add('open'); addSourceName.focus(); });
+  function openAddSourceModal(){ addSourceName.value=''; addMeetingName.value=''; addSourceModal.classList.add('open'); addSourceName.focus(); }
+  addSourceBtn.addEventListener('click',openAddSourceModal);
+  var topbarAddSourceBtn = document.getElementById('topbarAddSourceBtn');
+  if(topbarAddSourceBtn) topbarAddSourceBtn.addEventListener('click',function(){
+    navItems.forEach(function(n){ n.classList.remove('active'); });
+    var sourcesNav = document.querySelector('[data-page="sources"]');
+    if(sourcesNav) sourcesNav.classList.add('active');
+    showPage('sources');
+    openAddSourceModal();
+  });
+  var sourcesSearchInput = document.getElementById('sourcesSearchInput');
+  if(sourcesSearchInput) sourcesSearchInput.addEventListener('input',function(){
+    var q = (this.value || '').trim().toLowerCase();
+    var rows = sourcesTableBody.querySelectorAll('tr');
+    rows.forEach(function(tr){
+      var text = (tr.textContent || '').toLowerCase();
+      tr.style.display = !q || text.indexOf(q) !== -1 ? '' : 'none';
+    });
+  });
   addSourceModalClose.addEventListener('click',()=>addSourceModal.classList.remove('open'));
   addSourceModal.addEventListener('click',e=>{ if(e.target===addSourceModal) addSourceModal.classList.remove('open') });
   document.addEventListener('keydown',e=>{ if(e.key==='Escape') addSourceModal.classList.remove('open') });
