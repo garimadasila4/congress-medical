@@ -2,7 +2,7 @@
 <html lang="en" data-theme="dark">
 <head>
 <meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover"/>
 <title>Congress Design — Research Intelligence</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -31,9 +31,11 @@
   --teal:#0f8a74;--violet:#6b48c8;
 }
 
-html{font-size:16px;scroll-behavior:smooth}
+html{font-size:16px;scroll-behavior:smooth;overflow-x:hidden;max-width:100%;
+  -webkit-text-size-adjust:100%;box-sizing:border-box}
 body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;
-  font-weight:300;min-height:100vh;display:flex;overflow-x:hidden;transition:var(--T)}
+  font-weight:300;min-height:100vh;display:flex;overflow-x:hidden;transition:var(--T);
+  max-width:100%;min-width:0}
 ::selection{background:var(--gold-pale);color:var(--text)}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
   html{scroll-behavior:auto}}
@@ -104,14 +106,17 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
   letter-spacing:.04em}
 
 /* ── MAIN ── */
-.main{margin-left:var(--sidebar-w);flex:1;min-height:100vh;position:relative;z-index:1}
+.main{margin-left:var(--sidebar-w);flex:1;min-height:100vh;position:relative;z-index:1;
+  min-width:0;max-width:100%;overflow-x:hidden}
 
 /* ── TOPBAR ── */
 .topbar{display:flex;align-items:center;justify-content:space-between;
   padding:0 48px;height:77px;border-bottom:1px solid var(--border);
   background:var(--topbar-bg);backdrop-filter:blur(14px);
-  position:sticky;top:0;z-index:5;transition:var(--T)}
+  position:sticky;top:0;z-index:5;transition:var(--T);
+  min-width:0;max-width:100%}
 
+.topbar-search-wrap{display:block}
 .search-bar{display:flex;align-items:center;gap:10px;background:var(--surface2);
   border:1px solid var(--border);border-radius:8px;padding:9px 16px;
   width:260px;transition:border-color .2s,background .35s}
@@ -135,6 +140,9 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
   padding:7px 16px;border-radius:7px;font-family:'DM Sans',sans-serif;
   font-size:.78rem;letter-spacing:.04em;cursor:pointer;transition:all .2s}
 .btn-ghost:hover{border-color:var(--gold);color:var(--gold)}
+.btn-ghost.btn-with-icon{display:inline-flex;align-items:center;gap:8px}
+.btn-ghost .btn-icon{flex-shrink:0;opacity:.9}
+.btn-ghost:hover .btn-icon{opacity:1}
 
 .btn-gold{background:linear-gradient(135deg,var(--gold),#8b6200);border:none;color:#fff;
   padding:8px 20px;border-radius:7px;font-family:'DM Sans',sans-serif;
@@ -143,7 +151,8 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
 .btn-gold:hover{box-shadow:0 6px 26px rgba(201,168,76,.38);transform:translateY(-1px)}
 
 /* ── CONTENT ── */
-.content{padding:52px 48px}
+.content{padding:52px 48px;min-width:0;max-width:100%;overflow-x:hidden}
+.page-title,.card-title,.detail-title{word-wrap:break-word;overflow-wrap:break-word}
 
 .page-title{font-family:'Cormorant Garamond',serif;font-size:3rem;font-weight:300;
   letter-spacing:-.01em;line-height:1.1;color:var(--text);transition:color .35s}
@@ -417,11 +426,14 @@ input:focus,select:focus,button:focus{outline:none}
 @media (max-width:900px){
   .sidebar{transform:translateX(-100%);width:260px;box-shadow:8px 0 32px rgba(0,0,0,.25)}
   .sidebar.open{transform:translateX(0)}
-  .main{margin-left:0}
-  .topbar{padding:0 20px;height:64px}
-  .search-bar{display:none}
-  .topbar-actions{flex-wrap:nowrap;gap:8px}
-  .content{padding:32px 20px}
+  .main{margin-left:0;max-width:100vw}
+  .topbar{padding:0 20px;height:64px;padding-left:max(12px,env(safe-area-inset-left));padding-right:max(12px,env(safe-area-inset-right))}
+  .topbar-search-wrap{display:none !important}
+  .topbar-actions{flex-wrap:nowrap;gap:6px;min-width:0;flex-shrink:0}
+  .topbar-actions .btn-ghost{background:var(--surface2);border:1px solid var(--border);color:var(--text);
+    padding:8px 14px;font-size:.75rem;font-weight:500;border-radius:8px;min-height:40px}
+  .topbar-actions .btn-gold{padding:8px 14px;font-size:.75rem;min-height:40px}
+  .content{padding:32px 20px;padding-left:max(20px,env(safe-area-inset-left));padding-right:max(20px,env(safe-area-inset-right))}
   .page-title{font-size:2.2rem}
   .stats-grid{grid-template-columns:1fr;gap:1px}
   .abstracts-grid{grid-template-columns:1fr}
@@ -435,28 +447,41 @@ input:focus,select:focus,button:focus{outline:none}
   .modal{width:90vw;max-width:380px;padding:32px 24px 28px}
 }
 @media (max-width:600px){
-  .topbar-actions{gap:8px;flex-wrap:nowrap}
-  .search-bar{display:none}
-  .page-header{flex-direction:column;align-items:flex-start;gap:20px}
+  .topbar-actions{gap:6px;flex-wrap:nowrap;min-width:0}
+  .topbar-search-wrap{display:none !important}
+  .page-header{flex-direction:column;align-items:flex-start;gap:16px}
   .header-date{text-align:left}
   .search-controls{flex-direction:column;align-items:stretch}
-  .search-input-wrap{width:100%}
-  .search-results-table{display:block;overflow-x:auto}
+  .search-input-wrap{width:100%;max-width:100%}
+  .search-results-table{display:block;overflow-x:auto;-webkit-overflow-scrolling:touch;max-width:100%}
   .stat-value{font-size:2.5rem}
-  .content{min-width:0;padding:24px 16px}
-  .topbar{padding:0 16px}
+  .content{min-width:0;padding:24px 16px;padding-left:max(16px,env(safe-area-inset-left));padding-right:max(16px,env(safe-area-inset-right))}
+  .topbar{padding:0 12px;padding-left:max(12px,env(safe-area-inset-left));padding-right:max(12px,env(safe-area-inset-right))}
   .nav-item,.btn-ghost,.btn-gold,.menu-toggle{min-height:44px;min-width:44px}
-  .sources-section{overflow-x:auto;-webkit-overflow-scrolling:touch}
-.sources-table{min-width:320px}
+  .sources-section{overflow-x:auto;-webkit-overflow-scrolling:touch;max-width:100%}
+  .sources-table{min-width:280px}
+  .stats-grid,.abstracts-grid,.section-header{max-width:100%}
 }
 @media (max-width:480px){
   .page-title{font-size:1.85rem}
-  .content{padding:20px 12px}
-  .topbar{padding:0 12px;height:56px}
-  .search-bar{display:none}
-  .topbar-actions .btn-ghost{padding:6px 12px;font-size:.72rem;white-space:nowrap}
-  .abstract-card{padding:20px}
-  .stat-card{padding:20px 18px}
+  .content{padding:20px 12px;padding-left:max(12px,env(safe-area-inset-left));padding-right:max(12px,env(safe-area-inset-right))}
+  .topbar{padding:0 10px;height:56px;padding-left:max(10px,env(safe-area-inset-left));padding-right:max(10px,env(safe-area-inset-right))}
+  .topbar-search-wrap{display:none !important}
+  .topbar-actions{gap:4px}
+  .topbar-actions .btn-ghost{padding:6px 10px;font-size:.7rem;white-space:nowrap;
+    background:var(--surface2);border:1px solid var(--border);color:var(--text);font-weight:500;min-height:38px}
+  .topbar-actions .btn-gold{padding:6px 10px;font-size:.7rem;min-height:38px}
+  .abstract-card{padding:16px}
+  .stat-card{padding:16px 14px}
+  .stat-value{font-size:2rem}
+  .card-title{font-size:.95rem}
+}
+@media (max-width:390px){
+  .topbar-actions .btn-ghost span{display:none}
+  .topbar-actions .btn-ghost .btn-icon{margin:0}
+  .topbar-actions .btn-ghost{padding:8px;min-width:40px;min-height:40px;justify-content:center}
+  .content{padding:16px 10px;padding-left:max(10px,env(safe-area-inset-left));padding-right:max(10px,env(safe-area-inset-right))}
+  .page-title{font-size:1.65rem}
 }
 
 .menu-toggle{display:none;background:none;border:1px solid var(--border);
@@ -545,18 +570,22 @@ input:focus,select:focus,button:focus{outline:none}
     <button class="menu-toggle" id="menuToggle" aria-label="Open menu" type="button">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
     </button>
-    <div class="search-bar">
-      <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="var(--text-muted)" stroke-width="1.5">
-        <circle cx="6.5" cy="6.5" r="4.5"/><path d="M11 11l3 3"/>
-      </svg>
-      <input type="text" placeholder="Search abstracts, sources…"/>
+    <div class="topbar-search-wrap">
+      <div class="search-bar">
+        <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="var(--text-muted)" stroke-width="1.5">
+          <circle cx="6.5" cy="6.5" r="4.5"/><path d="M11 11l3 3"/>
+        </svg>
+        <input type="text" placeholder="Search abstracts, sources…"/>
+      </div>
     </div>
     <div class="topbar-actions">
       <div class="theme-toggle" id="themeToggle" title="Toggle theme">
         <div class="toggle-track"><div class="toggle-thumb"></div></div>
       </div>
-      <button class="btn-ghost" id="signInBtn">Sign in</button>
-      <button class="btn-ghost" id="signUpBtn">Sign up</button>
+      <button class="btn-ghost btn-with-icon" id="signInBtn">
+        <svg class="btn-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        <span>Sign in</span>
+      </button>
       <button class="btn-gold">+ Source</button>
     </div>
   </header>
@@ -769,20 +798,6 @@ input:focus,select:focus,button:focus{outline:none}
       <div class="modal-field"><label>Email address</label><input class="modal-input" type="email" placeholder="you@example.com" autocomplete="email"/></div>
       <div class="modal-field"><label>Password</label><input class="modal-input" type="password" placeholder="••••••••" autocomplete="current-password"/></div>
       <button class="modal-submit">Sign in</button>
-      <div class="modal-divider"><div class="modal-divider-line"></div><div class="modal-divider-text">or</div><div class="modal-divider-line"></div></div>
-      <div class="modal-footer">Don't have an account? <a id="switchToSignUp">Create one</a></div>
-    </div>
-
-    <div class="modal-form hidden" id="modalSignUp">
-      <div class="modal-title">Create account</div>
-      <div class="modal-subtitle">Sign up to get started with Congress Design</div>
-      <div class="modal-field"><label>Full name</label><input class="modal-input" type="text" placeholder="Your name" autocomplete="name"/></div>
-      <div class="modal-field"><label>Email address</label><input class="modal-input" type="email" placeholder="you@example.com" autocomplete="email"/></div>
-      <div class="modal-field"><label>Password</label><input class="modal-input" type="password" placeholder="••••••••" autocomplete="new-password"/></div>
-      <div class="modal-field"><label>Confirm password</label><input class="modal-input" type="password" placeholder="••••••••" autocomplete="new-password"/></div>
-      <button class="modal-submit">Create account</button>
-      <div class="modal-divider"><div class="modal-divider-line"></div><div class="modal-divider-text">or</div><div class="modal-divider-line"></div></div>
-      <div class="modal-footer">Already have an account? <a id="switchToSignIn">Sign in</a></div>
     </div>
   </div>
 </div>
@@ -860,16 +875,9 @@ input:focus,select:focus,button:focus{outline:none}
   searchDateSelect.addEventListener('change',filterSearchTable);
   searchSrcSelect.addEventListener('change',filterSearchTable);
 
-  // ── Sign in / Sign up modal ──
+  // ── Sign in modal ──
   const signInModal = document.getElementById('signInModal');
-  const modalSignIn = document.getElementById('modalSignIn');
-  const modalSignUp = document.getElementById('modalSignUp');
-  function showSignIn(){ modalSignIn.classList.remove('hidden'); modalSignUp.classList.add('hidden'); }
-  function showSignUp(){ modalSignIn.classList.add('hidden'); modalSignUp.classList.remove('hidden'); }
-  document.getElementById('signInBtn').addEventListener('click',()=>{ showSignIn(); signInModal.classList.add('open'); });
-  document.getElementById('signUpBtn').addEventListener('click',()=>{ showSignUp(); signInModal.classList.add('open'); });
-  document.getElementById('switchToSignUp').addEventListener('click',e=>{ e.preventDefault(); showSignUp(); });
-  document.getElementById('switchToSignIn').addEventListener('click',e=>{ e.preventDefault(); showSignIn(); });
+  document.getElementById('signInBtn').addEventListener('click',()=>signInModal.classList.add('open'));
   document.getElementById('modalClose').addEventListener('click',()=>signInModal.classList.remove('open'));
   signInModal.addEventListener('click',e=>{ if(e.target===signInModal) signInModal.classList.remove('open') });
   document.addEventListener('keydown',e=>{ if(e.key==='Escape') signInModal.classList.remove('open') });
