@@ -820,13 +820,16 @@ input:focus,select:focus,button:focus{outline:none}
 </div>
 
 <script>
-  // ── Theme ──
+(function(){
+  'use strict';
+  function ready(fn){ if(document.readyState!=='loading') fn(); else document.addEventListener('DOMContentLoaded',fn); }
+  ready(function(){
   const html = document.documentElement;
   const themeToggle = document.getElementById('themeToggle');
-  function applyTheme(t){ html.setAttribute('data-theme',t); localStorage.setItem('cd-theme',t) }
+  function applyTheme(t){ html.setAttribute('data-theme',t); localStorage.setItem('cd-theme',t); }
   const saved = localStorage.getItem('cd-theme');
   if(saved) applyTheme(saved);
-  themeToggle.addEventListener('click',()=>applyTheme(html.getAttribute('data-theme')==='dark'?'light':'dark'));
+  if(themeToggle) themeToggle.addEventListener('click',function(){ applyTheme(html.getAttribute('data-theme')==='dark'?'light':'dark'); });
 
   // ── Navigation ──
   const navItems = document.querySelectorAll('.nav-item[data-page]');
@@ -945,6 +948,8 @@ input:focus,select:focus,button:focus{outline:none}
   document.getElementById('sidebarClose').addEventListener('click',closeSidebar);
   navItems.forEach(item=> item.addEventListener('click',closeSidebar));
   document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeSidebar(); });
+  }); // end ready
+})();
 </script>
 </body>
 </html>
