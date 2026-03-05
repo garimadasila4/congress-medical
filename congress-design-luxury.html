@@ -395,6 +395,8 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
 .modal-footer a{color:var(--gold);cursor:pointer;text-decoration:none;
   border-bottom:1px solid rgba(201,168,76,.3);transition:border-color .2s}
 .modal-footer a:hover{border-color:var(--gold)}
+.modal-form{display:block}
+.modal-form.hidden{display:none}
 
 /* ── FOCUS & A11Y ── */
 .nav-item:focus-visible,.btn-ghost:focus-visible,.btn-gold:focus-visible,
@@ -417,13 +419,14 @@ input:focus,select:focus,button:focus{outline:none}
   .sidebar.open{transform:translateX(0)}
   .main{margin-left:0}
   .topbar{padding:0 20px;height:64px}
-  .search-bar{width:180px;padding:8px 12px}
+  .search-bar{display:none}
+  .topbar-actions{flex-wrap:nowrap;gap:8px}
   .content{padding:32px 20px}
   .page-title{font-size:2.2rem}
   .stats-grid{grid-template-columns:1fr;gap:1px}
   .abstracts-grid{grid-template-columns:1fr}
   .section-header{flex-wrap:wrap;gap:12px}
-  .detail-meta-grid{grid-template-columns:1fr)}
+  .detail-meta-grid{grid-template-columns:1fr}
   .detail-field{border-right:none;border-bottom:1px solid var(--border)}
   .detail-field:nth-last-child(-n+3){border-bottom:1px solid var(--border)}
   .detail-field:last-child{border-bottom:none}
@@ -432,14 +435,28 @@ input:focus,select:focus,button:focus{outline:none}
   .modal{width:90vw;max-width:380px;padding:32px 24px 28px}
 }
 @media (max-width:600px){
-  .topbar-actions{gap:8px}
-  .search-bar{width:140px;padding:8px 12px}
+  .topbar-actions{gap:8px;flex-wrap:nowrap}
+  .search-bar{display:none}
   .page-header{flex-direction:column;align-items:flex-start;gap:20px}
   .header-date{text-align:left}
   .search-controls{flex-direction:column;align-items:stretch}
   .search-input-wrap{width:100%}
   .search-results-table{display:block;overflow-x:auto}
   .stat-value{font-size:2.5rem}
+  .content{min-width:0;padding:24px 16px}
+  .topbar{padding:0 16px}
+  .nav-item,.btn-ghost,.btn-gold,.menu-toggle{min-height:44px;min-width:44px}
+  .sources-section{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.sources-table{min-width:320px}
+}
+@media (max-width:480px){
+  .page-title{font-size:1.85rem}
+  .content{padding:20px 12px}
+  .topbar{padding:0 12px;height:56px}
+  .search-bar{display:none}
+  .topbar-actions .btn-ghost{padding:6px 12px;font-size:.72rem;white-space:nowrap}
+  .abstract-card{padding:20px}
+  .stat-card{padding:20px 18px}
 }
 
 .menu-toggle{display:none;background:none;border:1px solid var(--border);
@@ -539,6 +556,7 @@ input:focus,select:focus,button:focus{outline:none}
         <div class="toggle-track"><div class="toggle-thumb"></div></div>
       </div>
       <button class="btn-ghost" id="signInBtn">Sign in</button>
+      <button class="btn-ghost" id="signUpBtn">Sign up</button>
       <button class="btn-gold">+ Source</button>
     </div>
   </header>
@@ -646,30 +664,30 @@ input:focus,select:focus,button:focus{outline:none}
           <div class="search-control-label">Search data</div>
           <div class="search-input-wrap">
             <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="var(--text-muted)" stroke-width="1.5"><circle cx="6.5" cy="6.5" r="4.5"/><path d="M11 11l3 3"/></svg>
-            <input type="text" placeholder="Search by source, meeting, keywords…"/>
+            <input id="searchDataInput" type="text" placeholder="Search by source, meeting, keywords…"/>
           </div>
         </div>
         <div class="search-control-group">
           <div class="search-control-label">Date</div>
-          <select class="search-select"><option>All years</option><option>2026</option><option>2025</option><option>2024</option></select>
+          <select id="searchDateSelect" class="search-select"><option value="">All years</option><option value="2026">2026</option><option value="2025">2025</option><option value="2024">2024</option></select>
         </div>
         <div class="search-control-group">
           <div class="search-control-label">Src</div>
-          <select class="search-select"><option>All sources</option><option>AAP</option><option>ASCO</option><option>EHA</option><option>ESMO</option><option>ACC</option><option>AHA</option></select>
+          <select id="searchSrcSelect" class="search-select"><option value="">All sources</option><option value="AAP">AAP</option><option value="ASCO">ASCO</option><option value="EHA">EHA</option><option value="ESMO">ESMO</option><option value="ACC">ACC</option><option value="AHA">AHA</option></select>
         </div>
       </div>
       <table class="search-results-table">
         <thead><tr><th>Creation Date</th><th>Source</th><th>Medicine</th><th>Meeting</th><th>Meeting Date</th><th>Keywords</th><th>View Details</th></tr></thead>
-        <tbody>
-          <tr><td>Feb 16, 2026</td><td><span class="source-badge">AAP</span></td><td class="dash">—</td><td class="meeting-cell">American Academy of Pediatric (AAP) 2024</td><td>2024-09-27 – 2024-10-01</td><td class="dash">—</td><td><button class="view-details-btn">View details →</button></td></tr>
-          <tr><td>Feb 16, 2026</td><td><span class="source-badge">AAP</span></td><td class="dash">—</td><td class="meeting-cell">American Academy of Pediatric (AAP) 2024</td><td>2024-09-27 – 2024-10-01</td><td class="dash">—</td><td><button class="view-details-btn">View details →</button></td></tr>
-          <tr><td>Feb 16, 2026</td><td><span class="source-badge">AAP</span></td><td class="dash">—</td><td class="meeting-cell">American Academy of Pediatric (AAP) 2024</td><td>2024-09-27 – 2024-10-01</td><td class="dash">—</td><td><button class="view-details-btn">View details →</button></td></tr>
-          <tr><td>Feb 16, 2026</td><td><span class="source-badge">AAP</span></td><td class="dash">—</td><td class="meeting-cell">American Academy of Pediatric (AAP) 2024</td><td>2024-09-27 – 2024-10-01</td><td class="dash">—</td><td><button class="view-details-btn">View details →</button></td></tr>
-          <tr><td>Feb 16, 2026</td><td><span class="source-badge">AAP</span></td><td class="dash">—</td><td class="meeting-cell">American Academy of Pediatric (AAP) 2024</td><td>2024-09-27 – 2024-10-01</td><td class="dash">—</td><td><button class="view-details-btn">View details →</button></td></tr>
-          <tr><td>Feb 16, 2026</td><td><span class="source-badge">AAP</span></td><td class="dash">—</td><td class="meeting-cell">American Academy of Pediatric (AAP) 2024</td><td>2024-09-27 – 2024-10-01</td><td class="dash">—</td><td><button class="view-details-btn">View details →</button></td></tr>
-          <tr><td>Feb 16, 2026</td><td><span class="source-badge">AAP</span></td><td class="dash">—</td><td class="meeting-cell">American Academy of Pediatric (AAP) 2024</td><td>2024-09-27 – 2024-10-01</td><td class="dash">—</td><td><button class="view-details-btn">View details →</button></td></tr>
-          <tr><td>Feb 16, 2026</td><td><span class="source-badge">AAP</span></td><td class="dash">—</td><td class="meeting-cell">American Academy of Pediatric (AAP) 2024</td><td>2024-09-27 – 2024-10-01</td><td class="dash">—</td><td><button class="view-details-btn">View details →</button></td></tr>
-          <tr><td>Feb 16, 2026</td><td><span class="source-badge">AAP</span></td><td class="dash">—</td><td class="meeting-cell">American Academy of Pediatric (AAP) 2024</td><td>2024-09-27 – 2024-10-01</td><td class="dash">—</td><td><button class="view-details-btn">View details →</button></td></tr>
+        <tbody id="searchResultsBody">
+          <tr data-source="AAP" data-year="2024"><td>Feb 16, 2026</td><td><span class="source-badge">AAP</span></td><td class="dash">—</td><td class="meeting-cell">American Academy of Pediatric (AAP) 2024</td><td>2024-09-27 – 2024-10-01</td><td class="dash">—</td><td><button class="view-details-btn">View details →</button></td></tr>
+          <tr data-source="AAP" data-year="2024"><td>Feb 16, 2026</td><td><span class="source-badge">AAP</span></td><td class="dash">—</td><td class="meeting-cell">American Academy of Pediatric (AAP) 2024</td><td>2024-09-27 – 2024-10-01</td><td class="dash">—</td><td><button class="view-details-btn">View details →</button></td></tr>
+          <tr data-source="AAP" data-year="2024"><td>Feb 16, 2026</td><td><span class="source-badge">AAP</span></td><td class="dash">—</td><td class="meeting-cell">American Academy of Pediatric (AAP) 2024</td><td>2024-09-27 – 2024-10-01</td><td class="dash">—</td><td><button class="view-details-btn">View details →</button></td></tr>
+          <tr data-source="ASCO" data-year="2025"><td>Mar 10, 2026</td><td><span class="source-badge">ASCO</span></td><td class="dash">—</td><td class="meeting-cell">ASCO Annual Meeting 2025</td><td>2025-05-30 – 2025-06-03</td><td class="dash">—</td><td><button class="view-details-btn">View details →</button></td></tr>
+          <tr data-source="ASCO" data-year="2025"><td>Mar 10, 2026</td><td><span class="source-badge">ASCO</span></td><td class="dash">—</td><td class="meeting-cell">ASCO Annual Meeting 2025</td><td>2025-05-30 – 2025-06-03</td><td class="dash">—</td><td><button class="view-details-btn">View details →</button></td></tr>
+          <tr data-source="EHA" data-year="2024"><td>Jan 22, 2026</td><td><span class="source-badge">EHA</span></td><td class="dash">—</td><td class="meeting-cell">EHA Congress 2024</td><td>2024-06-13 – 2024-06-16</td><td class="dash">—</td><td><button class="view-details-btn">View details →</button></td></tr>
+          <tr data-source="EHA" data-year="2024"><td>Jan 22, 2026</td><td><span class="source-badge">EHA</span></td><td class="dash">—</td><td class="meeting-cell">EHA Congress 2024</td><td>2024-06-13 – 2024-06-16</td><td class="dash">—</td><td><button class="view-details-btn">View details →</button></td></tr>
+          <tr data-source="AAP" data-year="2024"><td>Feb 16, 2026</td><td><span class="source-badge">AAP</span></td><td class="dash">—</td><td class="meeting-cell">American Academy of Pediatric (AAP) 2024</td><td>2024-09-27 – 2024-10-01</td><td class="dash">—</td><td><button class="view-details-btn">View details →</button></td></tr>
+          <tr data-source="AAP" data-year="2024"><td>Feb 16, 2026</td><td><span class="source-badge">AAP</span></td><td class="dash">—</td><td class="meeting-cell">American Academy of Pediatric (AAP) 2024</td><td>2024-09-27 – 2024-10-01</td><td class="dash">—</td><td><button class="view-details-btn">View details →</button></td></tr>
         </tbody>
       </table>
     </div>
@@ -738,19 +756,34 @@ input:focus,select:focus,button:focus{outline:none}
   </div><!-- /content -->
 </main>
 
-<!-- SIGN IN MODAL -->
+<!-- SIGN IN / SIGN UP MODAL -->
 <div class="modal-overlay" id="signInModal">
   <div class="modal">
     <button class="modal-close" id="modalClose">✕</button>
     <div class="modal-logo">Congress Design</div>
     <div class="modal-logo-sub">Research Intelligence</div>
-    <div class="modal-title">Welcome back</div>
-    <div class="modal-subtitle">Sign in to your account to continue</div>
-    <div class="modal-field"><label>Email address</label><input class="modal-input" type="email" placeholder="you@example.com"/></div>
-    <div class="modal-field"><label>Password</label><input class="modal-input" type="password" placeholder="••••••••"/></div>
-    <button class="modal-submit">Sign in</button>
-    <div class="modal-divider"><div class="modal-divider-line"></div><div class="modal-divider-text">or</div><div class="modal-divider-line"></div></div>
-    <div class="modal-footer">Don't have an account? <a id="switchToSignUp">Create one</a></div>
+
+    <div class="modal-form" id="modalSignIn">
+      <div class="modal-title">Welcome back</div>
+      <div class="modal-subtitle">Sign in to your account to continue</div>
+      <div class="modal-field"><label>Email address</label><input class="modal-input" type="email" placeholder="you@example.com" autocomplete="email"/></div>
+      <div class="modal-field"><label>Password</label><input class="modal-input" type="password" placeholder="••••••••" autocomplete="current-password"/></div>
+      <button class="modal-submit">Sign in</button>
+      <div class="modal-divider"><div class="modal-divider-line"></div><div class="modal-divider-text">or</div><div class="modal-divider-line"></div></div>
+      <div class="modal-footer">Don't have an account? <a id="switchToSignUp">Create one</a></div>
+    </div>
+
+    <div class="modal-form hidden" id="modalSignUp">
+      <div class="modal-title">Create account</div>
+      <div class="modal-subtitle">Sign up to get started with Congress Design</div>
+      <div class="modal-field"><label>Full name</label><input class="modal-input" type="text" placeholder="Your name" autocomplete="name"/></div>
+      <div class="modal-field"><label>Email address</label><input class="modal-input" type="email" placeholder="you@example.com" autocomplete="email"/></div>
+      <div class="modal-field"><label>Password</label><input class="modal-input" type="password" placeholder="••••••••" autocomplete="new-password"/></div>
+      <div class="modal-field"><label>Confirm password</label><input class="modal-input" type="password" placeholder="••••••••" autocomplete="new-password"/></div>
+      <button class="modal-submit">Create account</button>
+      <div class="modal-divider"><div class="modal-divider-line"></div><div class="modal-divider-text">or</div><div class="modal-divider-line"></div></div>
+      <div class="modal-footer">Already have an account? <a id="switchToSignIn">Sign in</a></div>
+    </div>
   </div>
 </div>
 
@@ -802,9 +835,41 @@ input:focus,select:focus,button:focus{outline:none}
     showPage('abstracts');
   });
 
-  // ── Sign in modal ──
+  // ── Search page: filter table by search text, date, and source ──
+  const searchDataInput = document.getElementById('searchDataInput');
+  const searchDateSelect = document.getElementById('searchDateSelect');
+  const searchSrcSelect = document.getElementById('searchSrcSelect');
+  const searchResultsBody = document.getElementById('searchResultsBody');
+  function filterSearchTable(){
+    const query = (searchDataInput.value || '').trim().toLowerCase();
+    const year = (searchDateSelect.value || '').trim();
+    const source = (searchSrcSelect.value || '').trim();
+    const rows = searchResultsBody.querySelectorAll('tr');
+    rows.forEach(tr=>{
+      const rowSource = (tr.getAttribute('data-source') || '').toLowerCase();
+      const rowYear = (tr.getAttribute('data-year') || '');
+      const rowText = (tr.textContent || '').toLowerCase();
+      const matchQuery = !query || rowText.includes(query);
+      const matchYear = !year || rowYear === year;
+      const matchSource = !source || rowSource === source.toLowerCase();
+      tr.style.display = (matchQuery && matchYear && matchSource) ? '' : 'none';
+    });
+  }
+  searchDataInput.addEventListener('input',filterSearchTable);
+  searchDataInput.addEventListener('keyup',filterSearchTable);
+  searchDateSelect.addEventListener('change',filterSearchTable);
+  searchSrcSelect.addEventListener('change',filterSearchTable);
+
+  // ── Sign in / Sign up modal ──
   const signInModal = document.getElementById('signInModal');
-  document.getElementById('signInBtn').addEventListener('click',()=>signInModal.classList.add('open'));
+  const modalSignIn = document.getElementById('modalSignIn');
+  const modalSignUp = document.getElementById('modalSignUp');
+  function showSignIn(){ modalSignIn.classList.remove('hidden'); modalSignUp.classList.add('hidden'); }
+  function showSignUp(){ modalSignIn.classList.add('hidden'); modalSignUp.classList.remove('hidden'); }
+  document.getElementById('signInBtn').addEventListener('click',()=>{ showSignIn(); signInModal.classList.add('open'); });
+  document.getElementById('signUpBtn').addEventListener('click',()=>{ showSignUp(); signInModal.classList.add('open'); });
+  document.getElementById('switchToSignUp').addEventListener('click',e=>{ e.preventDefault(); showSignUp(); });
+  document.getElementById('switchToSignIn').addEventListener('click',e=>{ e.preventDefault(); showSignIn(); });
   document.getElementById('modalClose').addEventListener('click',()=>signInModal.classList.remove('open'));
   signInModal.addEventListener('click',e=>{ if(e.target===signInModal) signInModal.classList.remove('open') });
   document.addEventListener('keydown',e=>{ if(e.key==='Escape') signInModal.classList.remove('open') });
