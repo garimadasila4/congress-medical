@@ -116,15 +116,6 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
   position:sticky;top:0;z-index:5;transition:var(--T);
   min-width:0;max-width:100%}
 
-.topbar-search-wrap{display:block}
-.search-bar{display:flex;align-items:center;gap:10px;background:var(--surface2);
-  border:1px solid var(--border);border-radius:8px;padding:9px 16px;
-  width:260px;transition:border-color .2s,background .35s}
-.search-bar:focus-within{border-color:rgba(201,168,76,.4)}
-.search-bar input{background:none;border:none;outline:none;font-family:'DM Sans',sans-serif;
-  font-size:.82rem;font-weight:300;color:var(--text);width:100%;transition:color .35s}
-.search-bar input::placeholder{color:var(--text-muted)}
-
 .topbar-actions{display:flex;align-items:center;gap:12px}
 
 /* theme toggle */
@@ -415,7 +406,7 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
 
 /* ── FOCUS & A11Y ── */
 .nav-item:focus-visible,.btn-ghost:focus-visible,.btn-gold:focus-visible,
-.search-bar:focus-within,.theme-toggle:focus-visible,.modal-close:focus-visible,
+.theme-toggle:focus-visible,.modal-close:focus-visible,
 .view-all:focus-visible,.view-details-btn:focus-visible,.btn-save:focus-visible,
 .btn-outline:focus-visible,.modal-submit:focus-visible,.detail-back-btn:focus-visible{
   outline:2px solid var(--gold);outline-offset:2px}
@@ -434,7 +425,6 @@ input:focus,select:focus,button:focus{outline:none}
   .sidebar.open{transform:translateX(0)}
   .main{margin-left:0;max-width:100vw}
   .topbar{padding:0 20px;height:64px;padding-left:max(12px,env(safe-area-inset-left));padding-right:max(12px,env(safe-area-inset-right))}
-  .topbar-search-wrap{display:none !important}
   .topbar-actions{flex-wrap:nowrap;gap:6px;min-width:0;flex-shrink:0}
   .topbar-actions .btn-ghost{background:var(--surface2);border:1px solid var(--border);color:var(--text);
     padding:8px 14px;font-size:.75rem;font-weight:500;border-radius:8px;min-height:40px}
@@ -454,7 +444,6 @@ input:focus,select:focus,button:focus{outline:none}
 }
 @media (max-width:600px){
   .topbar-actions{gap:6px;flex-wrap:nowrap;min-width:0}
-  .topbar-search-wrap{display:none !important}
   .page-header{flex-direction:column;align-items:flex-start;gap:16px}
   .header-date{text-align:left}
   .search-controls{flex-direction:column;align-items:stretch}
@@ -472,7 +461,6 @@ input:focus,select:focus,button:focus{outline:none}
   .page-title{font-size:1.85rem}
   .content{padding:20px 12px;padding-left:max(12px,env(safe-area-inset-left));padding-right:max(12px,env(safe-area-inset-right))}
   .topbar{padding:0 10px;height:56px;padding-left:max(10px,env(safe-area-inset-left));padding-right:max(10px,env(safe-area-inset-right))}
-  .topbar-search-wrap{display:none !important}
   .topbar-actions{gap:4px}
   .topbar-actions .btn-ghost{padding:6px 10px;font-size:.7rem;white-space:nowrap;
     background:var(--surface2);border:1px solid var(--border);color:var(--text);font-weight:500;min-height:38px}
@@ -576,14 +564,6 @@ input:focus,select:focus,button:focus{outline:none}
     <button class="menu-toggle" id="menuToggle" aria-label="Open menu" type="button">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
     </button>
-    <div class="topbar-search-wrap">
-      <div class="search-bar">
-        <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="var(--text-muted)" stroke-width="1.5">
-          <circle cx="6.5" cy="6.5" r="4.5"/><path d="M11 11l3 3"/>
-        </svg>
-        <input type="text" placeholder="Search abstracts, sources…"/>
-      </div>
-    </div>
     <div class="topbar-actions">
       <div class="theme-toggle" id="themeToggle" title="Toggle theme">
         <div class="toggle-track"><div class="toggle-thumb"></div></div>
